@@ -25,9 +25,9 @@ public class PlayerMapper {
 		PlayerTDG.insert(ip.getId(), ip.getFirstN(), ip.getLastN());
 	}
 	
-//	public void delete(Player ip) throws SQLException {
-//		PlayerTDG.delete(ip.getId(), ip.getVersion());
-//	}
+	public void delete(Player ip) throws SQLException {
+		PlayerTDG.delete(ip.getId(), ip.getVersion());
+	}
 	
 	public void update(Player ip) throws SQLException {
 		PlayerTDG.update(ip.getId(), ip.getFirstN(), ip.getLastN());

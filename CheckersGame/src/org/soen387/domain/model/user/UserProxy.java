@@ -1,6 +1,7 @@
 package org.soen387.domain.model.user;
 
 import java.sql.SQLException;
+import org.soen387.domain.user.mapper.UserMapper;
 
 public class UserProxy implements IUser {
 	long id;
@@ -12,40 +13,28 @@ public class UserProxy implements IUser {
 	
 	private User getUP(){
 		if(up==null)
-			try { up = UserMapper.getOJECT().findById(id);}
+			try { up = UserMapper.getOBJECT().findById(id);}
 			catch (SQLException e) {	e.printStackTrace();	}
 		
 		return up;
 	}
 	
 	@Override
-	public long getId() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
+	public long getId() {	return getUP().getId();}
 	@Override
-	public String getUserN() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	public String getUserN() {	return getUP().getUserN();}
 	@Override
-	public String getPassW() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	public String getPassW() {	return getUP().getPassW();}
 	@Override
-	public void setUserN(String u) {
-		// TODO Auto-generated method stub
+	public int getVersion() {return getUP().getVersion();}
 
-	}
-
+	
 	@Override
-	public void setPassW(String p) {
-		// TODO Auto-generated method stub
-
-	}
-
+	public void setUserN(String u) {	getUP().setUserN(u);}
+	@Override
+	public void setPassW(String p) {	getUP().setPassW(p);}
+	@Override
+	public void setVersion(int v) {		getUP().setVersion(v);}
+	
+	
 }

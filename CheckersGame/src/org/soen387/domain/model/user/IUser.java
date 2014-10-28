@@ -7,9 +7,12 @@ public interface IUser {
 	public abstract String getUserN();
 
 	public abstract String getPassW();
+	
+	public abstract int getVersion();
 
 	public abstract void setUserN(String u);
 
 	public abstract void setPassW(String p);
 
+	public abstract void setVersion(int v);
 }
