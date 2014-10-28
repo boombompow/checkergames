@@ -38,7 +38,7 @@ public class PlayerMapper {
 		ResultSet rs=PlayerTDG.findById((int)id);
 		Player p1 = null;
 		if(rs.next()) {
-			p1 = new Player(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), rs.getInt("version"));
+			p1 = new Player(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), rs.getString("email"), rs.getInt("version"));
 			rs.close();
 		} else 
 			return null;
@@ -53,7 +53,7 @@ public class PlayerMapper {
 		ResultSet rs=PlayerTDG.findAll();
 		
 		while(rs.next()) {	
-			p.add(new Player(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), rs.getInt("version")));
+			p.add(new Player(rs.getLong("id"), rs.getString("first_name"), rs.getString("last_name"), rs.getString("email"), rs.getInt("version")));
 		}
 		rs.close();
 		
@@ -62,12 +62,11 @@ public class PlayerMapper {
 	}
 	
 	public long getId() throws SQLException {
-		ResultSet rs=PersonTDG.getId();
+		ResultSet rs=PlayerTDG.getId();
 		long max_id=-1;
 		while(rs.next()){
 			max_id = rs.getLong("id");
 		}
-		
 		
 		return max_id;
 	} 
