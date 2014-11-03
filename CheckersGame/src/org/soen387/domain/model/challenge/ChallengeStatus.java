@@ -5,5 +5,6 @@ public enum ChallengeStatus {
 	Accepted,
 	Refused;
 	
+	public int getId() { return this.ordinal(); }
 	
 }

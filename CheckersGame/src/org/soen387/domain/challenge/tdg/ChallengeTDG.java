@@ -1,0 +1,94 @@
+package org.soen387.domain.challenge.tdg;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
+import org.dsrg.soenea.service.threadLocal.DbRegistry;
+
+public class ChallengeTDG {
+	public static final String TABLE_NAME = "Challenge";
+	public static final String COLUMNS = "id, version, status, challenger, challengee";
+	public static final String TRUNCATE_TABLE = "TRUNCATE TABLE  " + TABLE_NAME + ";";
+	public static final String DROP_TABLE = "DROP TABLE  " + TABLE_NAME + ";";
+	public static final String CREATE_TABLE ="CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" 
+			+ "id BIGINT, "
+			+ "version int, "
+			+ "status int, "
+			+ "challenger BIGINT, "
+			+ "challengee BIGINT "
+			+ ");";
+
+	public static final String UPDATE = "UPDATE " + TABLE_NAME + " "
+			+ "SET version=version+1, "
+			+ "status=? "
+			+ "pieces=? "
+			+ "challenger=? "
+			+ "challengee=? "
+			+ "WHERE id=? AND version=?;";
+	
+	public static final String DELETE = "DELETE FROM " + TABLE_NAME + " "
+			+ "WHERE id=? AND version=?;";
+	public static boolean deleteChallenge(long id, int version)
+	{
+		Connection con;
+		try {
+			con = DbRegistry.getDbConnection();
+			Statement delete = con.createStatement();
+			delete.execute(DELETE);
+			return true;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	
+	public static void createTable() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		Statement update = con.createStatement();
+		update.execute(CREATE_TABLE);
+	}
+
+	public static void dropTable() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		Statement update = con.createStatement();
+		update.execute(TRUNCATE_TABLE);
+		update = con.createStatement();
+		update.execute(DROP_TABLE);
+	}
+	
+	
+	public static final String INSERT = "INSERT INTO " + TABLE_NAME + " (" + COLUMNS + ") "
+			+ "VALUES (?,?,?,?,?);";
+	public static int insert(long id, int version, int status, long challenger, long challengee) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(INSERT);
+		ps.setLong	(1	, id);
+		ps.setInt	(2	, version);
+		ps.setInt	(3	, status);
+		ps.setLong	(4	, challenger);
+		ps.setLong	(5	, challengee);
+		System.out.println(ps.toString());
+		return ps.executeUpdate();
+	}
+	
+	public static final String FIND_ALL = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + ";";
+	public static ResultSet findAll() throws SQLException {
+    	Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(FIND_ALL);
+		return ps.executeQuery();
+	}
+	
+	public static final String FIND_BY_PLAYER = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + 
+										" WHERE challenger = ? OR challengee = ?;";
+	public static ResultSet findByPlayer(long id) throws SQLException {
+    	Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(FIND_BY_PLAYER);
+		ps.setLong(1,id);
+		ps.setLong(2,id);
+		return ps.executeQuery();
+	}
+}
