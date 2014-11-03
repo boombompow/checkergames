@@ -28,7 +28,7 @@ public class UserMapper {
 	}
 	
 	public int update(User ip) throws SQLException {
-		return UserTDG.update(ip.getId(), ip.getUserN(), ip.getPassW(), ip.getVersion());
+		return UserTDG.update(ip.getId(), ip.getUserN(), ip.getPassW());
 	}
 	
 	public User findById(long id) throws SQLException {

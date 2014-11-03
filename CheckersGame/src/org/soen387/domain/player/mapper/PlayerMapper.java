@@ -1,5 +1,4 @@
 package org.soen387.domain.player.mapper;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -22,7 +21,7 @@ public class PlayerMapper {
 	}
 	
 	public void insert(Player ip) throws SQLException {
-		PlayerTDG.insert(ip.getId(), ip.getFirstN(), ip.getLastN());
+		PlayerTDG.insert(ip.getId(), ip.getFirstN(), ip.getLastN(), ip.getEmail());
 	}
 	
 	public void delete(Player ip) throws SQLException {
@@ -30,7 +29,7 @@ public class PlayerMapper {
 	}
 	
 	public void update(Player ip) throws SQLException {
-		PlayerTDG.update(ip.getId(), ip.getFirstN(), ip.getLastN());
+		PlayerTDG.update(ip.getId(), ip.getFirstN(), ip.getLastN(), ip.getEmail(), ip.getVersion());
 	}
 	
 	public Player findById(long id) throws SQLException {

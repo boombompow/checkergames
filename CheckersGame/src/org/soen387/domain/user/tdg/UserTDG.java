@@ -23,7 +23,7 @@ public class UserTDG {
 	
 	public static final String UPDATE = "UPDATE " + TABLE_NAME + " "
 										+ "SET version=version+1, "
-										+ "username=? "
+										+ "username=?, "
 										+ "password=? "
 										+ "WHERE id=? AND version=?;";
 	
@@ -71,13 +71,13 @@ public class UserTDG {
 		return ps.executeUpdate();
 	}
 	
-	public static int update(long id, String user, String pass, int v) throws SQLException {
+	public static int update(long id, String user, String pass) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
 		PreparedStatement ps = con.prepareStatement(UPDATE);
 		ps.setString(1	, user);
 		ps.setString(2	, pass);
 		ps.setLong	(3	, id);
-		ps.setInt	(4	, v);
+		ps.setInt	(4	, 1);
 		System.out.println(ps.toString());
 		return ps.executeUpdate();
 	}
