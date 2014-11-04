@@ -10,6 +10,7 @@ import org.soen387.domain.checkerboard.tdg.CheckerBoardTDG;
 import org.soen387.domain.model.checkerboard.CheckerBoard;
 import org.soen387.domain.model.checkerboard.GameStatus;
 import org.soen387.domain.model.player.Player;
+import org.soen387.domain.player.mapper.PlayerMapper;
 
 public class CheckerBoardDataMapper {
 	
@@ -29,9 +30,9 @@ public class CheckerBoardDataMapper {
 		        		rs.getInt("version"),
 		        		GameStatus.values()[rs.getInt("status")],
 		        		pieces,
-		        		new Player(rs.getLong("first_player")),
-		        		new Player(rs.getLong("second_player")),
-		        		new Player(rs.getLong("current_player"))
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("first_player")),
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("second_player")),
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("current_player"))
 		        		));
 		    }
 		    return l;
