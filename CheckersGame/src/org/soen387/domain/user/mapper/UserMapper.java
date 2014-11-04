@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.soen387.domain.model.user.User;
+import org.soen387.domain.user.identitymap.UserIdentityMap;
 import org.soen387.domain.user.tdg.UserTDG;
 
 
@@ -19,30 +20,37 @@ public class UserMapper {
 		return um;
 	}
 	
-	public int insert(User ip) throws SQLException {
-		return UserTDG.insert(ip.getId(), ip.getUserN(), ip.getPassW(), ip.getVersion());
+	public void insert(User iu) throws SQLException {
+		UserTDG.insert(iu.getId(), iu.getUserN(), iu.getPassW(), iu.getVersion());
+		UserIdentityMap.put(iu.getId(), iu);
 	}
 	
-	public int delete(User ip) throws SQLException {
-		return UserTDG.delete(ip.getId(), ip.getVersion());
+	public void delete(User iu) throws SQLException {
+		UserTDG.delete(iu.getId(), iu.getVersion());
+		if(UserIdentityMap.has(iu.getId()))
+			UserIdentityMap.remove(iu.getId());
 	}
 	
-	public int update(User ip) throws SQLException {
-		return UserTDG.update(ip.getId(), ip.getUserN(), ip.getPassW());
+	public void update(User iu) throws SQLException {
+		UserTDG.update(iu.getId(), iu.getUserN(), iu.getPassW());
+		if(UserIdentityMap.has(iu.getId()))
+			UserIdentityMap.remove(iu.getId());
+		UserIdentityMap.put(iu.getId(), iu);
 	}
 	
 	public User findById(long id) throws SQLException {
-		
-		ResultSet rs=UserTDG.findById(id);
-		User p1 = null;
-		if(rs.next()) {
-			p1 = new User(rs.getLong("id"), rs.getString("username"), rs.getString("password"), rs.getInt("version"));
-			rs.close();
-		} else 
-			return null;
-		
-		
-		return p1;
+		if(UserIdentityMap.has(id))
+			return UserIdentityMap.get(id);
+		else{	
+			ResultSet rs=UserTDG.findById(id);
+			User p1 = null;
+			if(rs.next()) {
+				p1 = new User(rs.getLong("id"), rs.getString("username"), rs.getString("password"), rs.getInt("version"));
+				rs.close();
+			} 
+				
+			return p1;
+		}
 	}
 	
 	public List<User> findAll() throws SQLException {
