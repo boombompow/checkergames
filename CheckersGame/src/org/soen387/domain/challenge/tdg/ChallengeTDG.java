@@ -24,7 +24,6 @@ public class ChallengeTDG {
 	public static final String UPDATE = "UPDATE " + TABLE_NAME + " "
 			+ "SET version=version+1, "
 			+ "status=? "
-			+ "pieces=? "
 			+ "challenger=? "
 			+ "challengee=? "
 			+ "WHERE id=? AND version=?;";
@@ -60,6 +59,16 @@ public class ChallengeTDG {
 		update.execute(DROP_TABLE);
 	}
 	
+	public static void update(long id, int version, int status, long challenger, long challengee) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(UPDATE);
+		ps.setInt	(1	, status);
+		ps.setLong	(2	, challenger);
+		ps.setLong	(3	, challengee);
+		ps.setLong  (4, id);
+		ps.setInt   (5, version); 
+		ps.executeUpdate();
+	}
 	
 	public static final String INSERT = "INSERT INTO " + TABLE_NAME + " (" + COLUMNS + ") "
 			+ "VALUES (?,?,?,?,?);";
@@ -71,7 +80,6 @@ public class ChallengeTDG {
 		ps.setInt	(3	, status);
 		ps.setLong	(4	, challenger);
 		ps.setLong	(5	, challengee);
-		System.out.println(ps.toString());
 		return ps.executeUpdate();
 	}
 	

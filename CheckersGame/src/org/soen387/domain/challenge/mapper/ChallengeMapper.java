@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dsrg.soenea.domain.MapperException;
+import org.soen387.domain.challenge.identityMap.ChallengeIdentityMap;
 import org.soen387.domain.challenge.tdg.ChallengeTDG;
 import org.soen387.domain.model.challenge.Challenge;
 import org.soen387.domain.model.challenge.ChallengeStatus;
@@ -36,36 +37,46 @@ public class ChallengeMapper {
 		ChallengeTDG.dropTable();
 	}
 	
-	public static List<Challenge> buildCollection(ResultSet rs) throws SQLException
-	{
-		ArrayList<Challenge> l = new ArrayList<Challenge>();
-	    while(rs.next()) {
-	        l.add(new Challenge(rs.getLong("id"),
-	        		rs.getInt("version"),
-	        		ChallengeStatus.values()[rs.getInt("status")],
-	        		PlayerMapper.getOBJECT().findById(rs.getLong("challenger")),
-	        		PlayerMapper.getOBJECT().findById(rs.getLong("challengee"))
-	        		));
-	        
-	    }
-	   
-	    return l;
-	}
-	
-	public static List<Challenge> findAll() throws MapperException 
+	public static List<IChallenge> findAll() throws MapperException 
 	{
 		try {
             ResultSet rs = ChallengeTDG.findAll();
-            return buildCollection(rs);
+            ArrayList<IChallenge> c = new ArrayList<IChallenge>();
+    	    while(rs.next()) {
+    	        c.add(new Challenge(rs.getLong("id"),
+    	        		rs.getInt("version"),
+    	        		ChallengeStatus.values()[rs.getInt("status")],
+    	        		PlayerMapper.getOBJECT().findById(rs.getLong("challenger")),
+    	        		PlayerMapper.getOBJECT().findById(rs.getLong("challengee"))
+    	        		));
+    	        if(!ChallengeIdentityMap.has(c.get(c.size()-1).getId()))
+    	        	ChallengeIdentityMap.put(c.get(c.size()-1).getId(), c.get(c.size()-1));
+    	    }	
+    	    return c;
         } catch (SQLException e) {
             throw new MapperException(e);
         }
 	}
 	
-	public static List<Challenge> findById(long id) throws MapperException{
+	public static IChallenge findById(long id) throws MapperException{
+		if(ChallengeIdentityMap.has(id))
+		{
+			return ChallengeIdentityMap.get(id);
+		}
 		try{
 			ResultSet rs = ChallengeTDG.findByPlayer(id);
-			return buildCollection(rs);
+			IChallenge c = null;
+			if(rs.next()) {
+				c = new Challenge(rs.getLong("id"),
+		        		rs.getInt("version"),
+		        		ChallengeStatus.values()[rs.getInt("status")],
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challenger")),
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challengee"))
+		        		);
+				rs.close();
+			}
+			ChallengeIdentityMap.put(id, c);
+			return c;
 		} catch (SQLException e){
 			throw new MapperException(e);
 		}
@@ -73,9 +84,17 @@ public class ChallengeMapper {
 	
 	public static void insert(IChallenge c) throws SQLException {
 		ChallengeTDG.insert(c.getId(), c.getVersion(), status(c), c.getChallenger().getId(), c.getChallengee().getId());
+		ChallengeIdentityMap.put(c.getId(), c);
 	}
 	
 	public static void delete(IChallenge c) throws SQLException {
 		ChallengeTDG.deleteChallenge(c.getId(), c.getVersion());
+		ChallengeIdentityMap.remove(c.getId());
+	}
+	
+	public static void update(IChallenge c) throws SQLException {
+		ChallengeTDG.update(c.getId(), c.getVersion(), status(c), c.getChallenger().getId(), c.getChallengee().getId());
+		ChallengeIdentityMap.remove(c.getId());
+		ChallengeIdentityMap.put(c.getId(), c);
 	}
 }
