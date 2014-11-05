@@ -19,6 +19,23 @@ public class UserMapper {
 		return um;
 	}
 	
+	public User findUser(String username, String password) throws SQLException {
+		ResultSet rs=UserTDG.findUser(username, password);
+		User p1 = null;
+		if(rs.next()) {
+			p1 = new User(rs.getLong("id"), rs.getString("username"), rs.getString("password"), rs.getInt("version"));
+			rs.close();
+		} else {
+			return null;
+		}
+		
+		return p1;
+	}
+	
+	public void createTable() throws SQLException {
+		UserTDG.createTable();
+	}
+	
 	public int insert(User ip) throws SQLException {
 		return UserTDG.insert(ip.getId(), ip.getUserN(), ip.getPassW(), ip.getVersion());
 	}
