@@ -20,9 +20,31 @@ public class UserMapper {
 		return um;
 	}
 	
+<<<<<<< HEAD
 	public void insert(User iu) throws SQLException {
 		UserTDG.insert(iu.getId(), iu.getUserN(), iu.getPassW(), iu.getVersion());
 		UserIdentityMap.put(iu.getId(), iu);
+=======
+	public User findUser(String username, String password) throws SQLException {
+		ResultSet rs=UserTDG.findUser(username, password);
+		User p1 = null;
+		if(rs.next()) {
+			p1 = new User(rs.getLong("id"), rs.getString("username"), rs.getString("password"), rs.getInt("version"));
+			rs.close();
+		} else {
+			return null;
+		}
+		
+		return p1;
+	}
+	
+	public void createTable() throws SQLException {
+		UserTDG.createTable();
+	}
+	
+	public int insert(User ip) throws SQLException {
+		return UserTDG.insert(ip.getId(), ip.getUserN(), ip.getPassW(), ip.getVersion());
+>>>>>>> 50be692d522e724a4ef38afbe4b332cdcb586cc5
 	}
 	
 	public void delete(User iu) throws SQLException {

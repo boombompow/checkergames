@@ -33,6 +33,9 @@ public class UserTDG {
 	public static final String FIND_BY_ID = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + 
 												" WHERE id = ?;";
 	
+	public static final String FIND_USER = "SELECT * FROM " + TABLE_NAME + 
+												" WHERE username = ? AND password = ?;";
+	
 	public static final String FIND_ALL = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + ";";
 	
 	public static void createTable() throws SQLException {
@@ -95,6 +98,15 @@ public class UserTDG {
 		PreparedStatement ps = con.prepareStatement(FIND_ALL);
 		
 		return ps.executeQuery();
+	}
+	
+	public static ResultSet findUser(String username, String password) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(FIND_USER);
+		ps.setString(1, username);
+		ps.setString(2, password);
+		
+		return ps.executeQuery();		
 	}
 	
 	public static ResultSet getId() throws SQLException {
