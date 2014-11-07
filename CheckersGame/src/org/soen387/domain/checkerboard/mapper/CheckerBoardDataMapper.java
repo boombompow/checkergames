@@ -49,15 +49,18 @@ public class CheckerBoardDataMapper {
             throw new MapperException(e);
         }
 	}
-	public static List<ICheckerBoard> findByPlayer(long id, long id2) throws MapperException{
-		if(CheckerBoardIdentityMap.has(id))
-		{
-			ArrayList<ICheckerBoard> l = new ArrayList<ICheckerBoard>();
-			l.add(CheckerBoardIdentityMap.get(id));
-			return l;
-		}
+	public static List<ICheckerBoard> findByPlayer(long id) throws MapperException{
 		try{
-			ResultSet rs = CheckerBoardTDG.findByPlayer(id, id2);
+			ResultSet rs = CheckerBoardTDG.findByPlayer(id);
+			return buildCollection(rs);
+		} catch (SQLException e){
+			throw new MapperException(e);
+		}
+	}
+	
+	public static List<ICheckerBoard> findAllPlayer(long id, long id2) throws MapperException{
+		try{
+			ResultSet rs = CheckerBoardTDG.findAllPlayer(id, id2);
 			return buildCollection(rs);
 		} catch (SQLException e){
 			throw new MapperException(e);

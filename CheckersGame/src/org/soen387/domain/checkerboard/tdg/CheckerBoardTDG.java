@@ -95,13 +95,23 @@ public class CheckerBoardTDG {
 	public static final String FIND_BY_PLAYER = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + 
 										" WHERE (first_player = ? AND second_player = ?) "
 										+ "OR (first_player = ? AND second_player = ?);";
-	public static ResultSet findByPlayer(long id, long id2) throws SQLException {
+	public static ResultSet findAllPlayer(long id, long id2) throws SQLException {
     	Connection con = DbRegistry.getDbConnection();
 		PreparedStatement ps = con.prepareStatement(FIND_BY_PLAYER);
 		ps.setLong(1,id);
 		ps.setLong(2,id2);
 		ps.setLong(3,id2);
 		ps.setLong(4,id);
+		return ps.executeQuery();
+	}
+	
+	public static final String FIND_a_PLAYER = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + 
+			" WHERE first_player = ? OR second_player = ? ;";
+	public static ResultSet findByPlayer(long id) throws SQLException {
+    	Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(FIND_a_PLAYER);
+		ps.setLong(1,id);
+		ps.setLong(2,id);
 		return ps.executeQuery();
 	}
 	
