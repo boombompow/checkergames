@@ -125,11 +125,6 @@ public class CheckerBoardDataMapper {
 		CheckerBoardIdentityMap.remove(c.getId());
 	}
 	
-	public static void delete(long id, int version) throws SQLException
-	{
-		CheckerBoardTDG.delete(id, version);
-	}
-	
 	public static void createTable() throws SQLException
 	{
 		CheckerBoardTDG.createTable();

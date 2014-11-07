@@ -1,11 +1,6 @@
 package org.soen387.domain.model.challenge;
 
-import java.util.List;
 
-import org.dsrg.soenea.domain.MapperException;
-import org.soen387.domain.challenge.mapper.ChallengeMapper;
-import org.soen387.domain.checkerboard.mapper.CheckerBoardDataMapper;
-import org.soen387.domain.model.checkerboard.ICheckerBoard;
 import org.soen387.domain.model.player.IPlayer;
 
 public class Challenge implements IChallenge {
