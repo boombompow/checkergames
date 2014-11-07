@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.dsrg.soenea.domain.MapperException;
 import org.soen387.domain.checkerboard.mapper.CheckerBoardDataMapper;
 import org.soen387.domain.model.checkerboard.CheckerBoard;
+import org.soen387.domain.model.checkerboard.ICheckerBoard;
 
 /**
  * Servlet implementation class ListGames
@@ -40,7 +41,7 @@ public class ListGames extends AbstractPageController implements Servlet {
 		//appropriate!
 		
 		try {
-			List<CheckerBoard> games = CheckerBoardDataMapper.findAll();
+			List<ICheckerBoard> games = CheckerBoardDataMapper.findAll();
 			request.setAttribute("games", games);
 			request.getRequestDispatcher("/WEB-INF/jsp/xml/listgames.jsp").forward(request, response);
 		} catch (MapperException e) {

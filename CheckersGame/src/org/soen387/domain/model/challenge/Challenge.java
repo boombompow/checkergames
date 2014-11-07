@@ -1,5 +1,11 @@
 package org.soen387.domain.model.challenge;
 
+import java.util.List;
+
+import org.dsrg.soenea.domain.MapperException;
+import org.soen387.domain.challenge.mapper.ChallengeMapper;
+import org.soen387.domain.checkerboard.mapper.CheckerBoardDataMapper;
+import org.soen387.domain.model.checkerboard.ICheckerBoard;
 import org.soen387.domain.model.player.IPlayer;
 
 public class Challenge implements IChallenge {
@@ -14,8 +20,37 @@ public class Challenge implements IChallenge {
 	{
 		this.challenger = challenger;
 		this.challengee = challengee;
+		this.status = status;
 		this.id = id;
 		this.version = version;
+	}
+	
+	public static boolean check(IPlayer challenger, IPlayer challengee)
+	{
+		if(challenger == challengee)
+			return false;
+		else
+			try {
+				List<IChallenge> c = ChallengeMapper.check(challenger.getId(), challengee.getId());
+				for(int i = 0; i < c.size(); i++)
+				{
+					if(c.get(i).getStatus().equals("Ongoing"))
+					{
+						return false;
+					}
+				}
+				
+				List<ICheckerBoard> p = CheckerBoardDataMapper.findByPlayer(challenger.getId(), challengee.getId());
+				for(int i = 0; i < p.size(); i++)
+				{
+					if(p.get(i).getStatus().equals("Ongoing"))
+					{
+						return false;
+					}
+				}
+			} catch (MapperException e) {
+			}
+		return true;
 	}
 	
 	/* (non-Javadoc)
