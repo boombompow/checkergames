@@ -18,8 +18,8 @@ public class ChallengeTDG {
 			+ "version int, "
 			+ "status int, "
 			+ "challenger BIGINT, "
-			+ "challengee BIGINT "
-			+ ");";
+			+ "challengee BIGINT, "
+			+ "PRIMARY KEY (id));";
 
 	public static final String UPDATE = "UPDATE " + TABLE_NAME + " "
 			+ "SET version=version+1, "
@@ -30,18 +30,13 @@ public class ChallengeTDG {
 	
 	public static final String DELETE = "DELETE FROM " + TABLE_NAME + " "
 			+ "WHERE id=? AND version=?;";
-	public static boolean deleteChallenge(long id, int version)
+	public static void deleteChallenge(long id, int version) throws SQLException
 	{
-		Connection con;
-		try {
-			con = DbRegistry.getDbConnection();
-			Statement delete = con.createStatement();
-			delete.execute(DELETE);
-			return true;
-		} catch (SQLException e) {
-			e.printStackTrace();
-			return false;
-		}
+		Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(DELETE);
+		ps.setLong	(1	, id);
+		ps.setInt   (2, version); 
+		ps.executeUpdate();	
 	}
 	
 	
@@ -99,4 +94,17 @@ public class ChallengeTDG {
 		ps.setLong(2,id);
 		return ps.executeQuery();
 	}
+	public static final String Check = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + 
+			" WHERE (first_player = ? AND second_player = ?) "
+			+ "OR (first_player = ? AND second_player = ?);";
+	public static ResultSet CheckPlayer(long id, long id2) throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		PreparedStatement ps = con.prepareStatement(FIND_BY_PLAYER);
+		ps.setLong(1,id);
+		ps.setLong(2,id2);
+		ps.setLong(3,id2);
+		ps.setLong(4,id);
+		return ps.executeQuery();
+	}
+	
 }

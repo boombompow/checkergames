@@ -66,10 +66,39 @@ public class ChallengeMapper {
         }
 	}
 	
+<<<<<<< HEAD
 	public static IChallenge findByBoth(long challenger, long challengee) throws MapperException{
+=======
+	public static List<IChallenge> check(long id, long id2) throws MapperException
+	{
+		try {
+	        ResultSet rs = ChallengeTDG.CheckPlayer(id, id2);
+	        ArrayList<IChallenge> c = new ArrayList<IChallenge>();
+		    while(rs.next()) {
+		        c.add(new Challenge(rs.getLong("id"),
+		        		rs.getInt("version"),
+		        		ChallengeStatus.values()[rs.getInt("status")],
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challenger")),
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challengee"))
+		        		));
+		        if(!ChallengeIdentityMap.has(c.get(c.size()-1).getId()))
+		        	ChallengeIdentityMap.put(c.get(c.size()-1).getId(), c.get(c.size()-1));
+	    }	
+	    return c;
+    } catch (SQLException e) {	
+        throw new MapperException(e);
+    }
+	}
+	
+	public static IChallenge findById(long id) throws MapperException{
+		if(ChallengeIdentityMap.has(id))
+		{
+			return ChallengeIdentityMap.get(id);
+		}
+		IChallenge c = null;
+>>>>>>> 8de97a47d06ad71a442883ebfd8cff3906d6ad47
 		try{
 			ResultSet rs = ChallengeTDG.findByPlayer(id);
-			IChallenge c = null;
 			if(rs.next()) {
 				c = new Challenge(rs.getLong("id"),
 		        		rs.getInt("version"),
@@ -80,10 +109,10 @@ public class ChallengeMapper {
 				rs.close();
 			}
 			ChallengeIdentityMap.put(id, c);
-			return c;
 		} catch (SQLException e){
 			throw new MapperException(e);
 		}
+		return c;
 	}
 	
 	public static List<IChallenge> findAllById(long id) throws MapperException{

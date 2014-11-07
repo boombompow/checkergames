@@ -34,7 +34,7 @@ public class ChallengeIdentityMap {
 	
 	public static boolean has(long id)
 	{
-		HashMap<Long, IChallenge> HashM = challengeIM.get();
+		HashMap<Long, IChallenge> HashM = getIdentityMap();
 		return HashM.containsKey(id);
 	}
 

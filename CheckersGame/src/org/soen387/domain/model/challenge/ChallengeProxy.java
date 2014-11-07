@@ -7,17 +7,17 @@ import org.soen387.domain.model.player.IPlayer;
 public class ChallengeProxy implements IChallenge{
 
 	private long id;
-	private Challenge c;
+	private IChallenge c;
 	
 	public ChallengeProxy(long id){
 		this.id=id;
 	}
 	
-	private Challenge getInnerObject(){
+	private IChallenge getInnerObject(){
 		if(c == null)
 		{
 			try {
-				ChallengeMapper.findById(id);
+				c = ChallengeMapper.findById(id);
 			} catch (MapperException e) {
 			}
 		}
