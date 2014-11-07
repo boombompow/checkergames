@@ -68,9 +68,18 @@ public class CheckersServlet extends HttpServlet {
 		} else if(action.equals("/profile")){
 			//doHomePage(request, response);
 			request.getRequestDispatcher("/WEB-INF/jsp/home_2.jsp").forward(request, response);
+		} else if(action.equals("/makeCH")) {
+			doChallenge(request, response);
 		}
 	}
 	
+	private void doChallenge(HttpServletRequest request,
+			HttpServletResponse response) {
+		ChallengeMapper.getOBJECT().fin
+		
+		
+	}
+
 	/**
 	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
 	 */
@@ -113,8 +122,10 @@ public class CheckersServlet extends HttpServlet {
 			List<Player> players = PlayerMapper.getOBJECT().findAll();
 			request.setAttribute("players", players);
 			
-			List<IChallenge> challenges = ChallengeMapper.getOBJECT().findAllById(user.getId())
-; 			
+			List<IChallenge> challenges = ChallengeMapper.getOBJECT().findAllById(user.getId());
+			request.setAttribute("challenges", challenges);
+			
+			
 			// Set sessions
 			HttpSession session = request.getSession();
 			session.setAttribute("user", user);

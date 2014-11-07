@@ -66,11 +66,7 @@ public class ChallengeMapper {
         }
 	}
 	
-	public static IChallenge findById(long id) throws MapperException{
-		if(ChallengeIdentityMap.has(id))
-		{
-			return ChallengeIdentityMap.get(id);
-		}
+	public static IChallenge findByBoth(long challenger, long challengee) throws MapperException{
 		try{
 			ResultSet rs = ChallengeTDG.findByPlayer(id);
 			IChallenge c = null;

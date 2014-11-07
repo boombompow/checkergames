@@ -10,5 +10,25 @@ including: player id, first name, last name, email.
 
 
 
+
+
+<c:forEach var="challenge" items="${challenges }">
+${challenge.firstName}${" "}${challenge.lastName}${" "}<br/>
+</c:forEach>
+
+
+<c:forEach var="player" items="${players }">
+${player.userN}${" "}$<a href="<c:url value="/CheckersGame/makeCH?id=${player.id}"/>">challenge him!!</a><br/>
+</c:forEach>
+
+
+<c:forEach var="game" items="${games }">
+${game.firstName}${" "}${game.lastName}${" "}<br/>
+</c:forEach>
+
+
+
+
+
 </body>
 </html>
