@@ -10,9 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.dsrg.soenea.domain.MapperException;
+import org.soen387.domain.challenge.mapper.ChallengeMapper;
 import org.soen387.domain.checkerboard.mapper.CheckerBoardDataMapper;
+import org.soen387.domain.model.challenge.Challenge;
+import org.soen387.domain.model.challenge.ChallengeStatus;
+import org.soen387.domain.model.challenge.IChallenge;
 import org.soen387.domain.model.checkerboard.CheckerBoard;
+import org.soen387.domain.model.checkerboard.GameStatus;
 import org.soen387.domain.model.checkerboard.ICheckerBoard;
+import org.soen387.domain.player.identitymap.PlayerIdentityMap;
+import org.soen387.domain.player.mapper.PlayerMapper;
 
 /**
  * Servlet implementation class ListGames
@@ -41,11 +48,20 @@ public class ListGames extends AbstractPageController implements Servlet {
 		//appropriate!
 		
 		try {
-			List<ICheckerBoard> games = CheckerBoardDataMapper.findAll();
-			request.setAttribute("games", games);
+			//ChallengeMapper.insert(new Challenge(2,1,ChallengeStatus.values()[0],
+			//PlayerMapper.getOBJECT().findById(1), PlayerMapper.getOBJECT().findById(2)));
+			//List<ICheckerBoard> games = CheckerBoardDataMapper.findAll();
+			//request.setAttribute("games", games);
+			char[][] test = new char[8][8];
+			CheckerBoardDataMapper.insert(new CheckerBoard(1L,1,GameStatus.values()[1], test,
+					PlayerMapper.getOBJECT().findById(1),
+					PlayerMapper.getOBJECT().findById(2),
+					PlayerMapper.getOBJECT().findById(1)));
+			System.out.println(ChallengeMapper.check1(PlayerMapper.getOBJECT().findById(1), PlayerMapper.getOBJECT().findById(2)));
 			request.getRequestDispatcher("/WEB-INF/jsp/xml/listgames.jsp").forward(request, response);
-		} catch (MapperException e) {
 
+		}catch (Exception e)
+		{
 			e.printStackTrace();
 		}
 		

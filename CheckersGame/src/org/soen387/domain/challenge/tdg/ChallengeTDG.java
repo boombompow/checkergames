@@ -95,11 +95,11 @@ public class ChallengeTDG {
 		return ps.executeQuery();
 	}
 	public static final String Check = "SELECT " + COLUMNS + " FROM " + TABLE_NAME + 
-			" WHERE (first_player = ? AND second_player = ?) "
-			+ "OR (first_player = ? AND second_player = ?);";
+			" WHERE (challenger = ? AND challengee = ?) "
+			+ "OR (challengee = ? AND challenger = ?);";
 	public static ResultSet CheckPlayer(long id, long id2) throws SQLException {
 		Connection con = DbRegistry.getDbConnection();
-		PreparedStatement ps = con.prepareStatement(FIND_BY_PLAYER);
+		PreparedStatement ps = con.prepareStatement(Check);
 		ps.setLong(1,id);
 		ps.setLong(2,id2);
 		ps.setLong(3,id2);

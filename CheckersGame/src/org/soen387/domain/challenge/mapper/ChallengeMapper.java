@@ -8,9 +8,12 @@ import java.util.List;
 import org.dsrg.soenea.domain.MapperException;
 import org.soen387.domain.challenge.identityMap.ChallengeIdentityMap;
 import org.soen387.domain.challenge.tdg.ChallengeTDG;
+import org.soen387.domain.checkerboard.mapper.CheckerBoardDataMapper;
 import org.soen387.domain.model.challenge.Challenge;
 import org.soen387.domain.model.challenge.ChallengeStatus;
 import org.soen387.domain.model.challenge.IChallenge;
+import org.soen387.domain.model.checkerboard.ICheckerBoard;
+import org.soen387.domain.model.player.IPlayer;
 import org.soen387.domain.player.mapper.PlayerMapper;
 
 
@@ -56,6 +59,37 @@ public class ChallengeMapper {
         } catch (SQLException e) {
             throw new MapperException(e);
         }
+	}
+	
+	public static boolean check1(IPlayer challenger, IPlayer challengee)
+	{
+		if(challenger == challengee)
+			return false;
+		else
+		{
+			try {
+				List<IChallenge> c = ChallengeMapper.check(challenger.getId(), challengee.getId());
+				for(int i = 0; i < c.size(); i++)
+				{
+					if(c.get(i).getStatus().toString().equals("Open"))
+					{
+						return false;
+					}
+				}
+				List<ICheckerBoard> p = CheckerBoardDataMapper.findAllPlayer(challenger.getId(), challengee.getId());
+				for(int i = 0; i < p.size(); i++)
+				{
+					if(p.get(i).getStatus().toString().equals("Ongoing"))
+					{
+						return false;
+					}
+				}
+				
+			} catch (MapperException e) {
+				e.printStackTrace();
+			}
+		}
+		return true;
 	}
 	
 	public static List<IChallenge> check(long id, long id2) throws MapperException
