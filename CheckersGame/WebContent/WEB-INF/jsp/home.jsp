@@ -7,12 +7,12 @@
 <h1>Welcome to checker game</h1>
 <h2>Login</h2>
 	<div>
-		<form  action="/CheckersGame/" method="post" >
+		<form  action="/CheckersGame/doLogin" method="post" >
 			Username:<input type="text" name="username" required/><br />
 			Password:<input type="password" name="password" required/><br />
 			<input type="submit">
 		</form>
 	</div>
-<a href="/register">Register</a>
+<a href="/CheckersGame/register">Register</a>
 </body>
 </html>

@@ -12,10 +12,11 @@ import org.soen387.domain.model.challenge.Challenge;
 import org.soen387.domain.model.challenge.ChallengeStatus;
 import org.soen387.domain.model.challenge.IChallenge;
 import org.soen387.domain.player.mapper.PlayerMapper;
+import org.soen387.domain.user.mapper.UserMapper;
 
 
 public class ChallengeMapper {
-	
+	private static ChallengeMapper cm;
 	public static int status(IChallenge c)
 	{
 		switch(c.getStatus())
@@ -27,13 +28,20 @@ public class ChallengeMapper {
 		return -1;
 	}
 	
+	public static ChallengeMapper getOBJECT(){
+		if(cm==null)
+			cm = new ChallengeMapper();
+		
+		return cm;
+	}
+	
 	public static void createTable() throws SQLException
-	{
+	{	
 		ChallengeTDG.createTable();
 	}
 	
 	public static void dropTable() throws SQLException
-	{
+	{		
 		ChallengeTDG.dropTable();
 	}
 	
@@ -82,6 +90,15 @@ public class ChallengeMapper {
 		}
 	}
 	
+	public static List<IChallenge> findAllById(long id) throws MapperException{
+        try {
+            ResultSet rs = ChallengeTDG.findByPlayer(id);
+            return buildCollection(rs);
+        } catch (SQLException e) {
+            throw new MapperException(e);
+        }
+	}
+	
 	public static void insert(IChallenge c) throws SQLException {
 		ChallengeTDG.insert(c.getId(), c.getVersion(), status(c), c.getChallenger().getId(), c.getChallengee().getId());
 		ChallengeIdentityMap.put(c.getId(), c);
@@ -97,4 +114,18 @@ public class ChallengeMapper {
 		ChallengeIdentityMap.remove(c.getId());
 		ChallengeIdentityMap.put(c.getId(), c);
 	}
+	
+	public static List<IChallenge> buildCollection(ResultSet rs)
+		    throws SQLException {
+		    ArrayList<IChallenge> c = new ArrayList<IChallenge>();
+		    
+		    while(rs.next()) {
+		        c.add(new Challenge(rs.getLong("id"),rs.getInt("version"),
+		        		ChallengeStatus.values()[rs.getInt("status")],
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challenger")),
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challengee"))     
+		        		));
+		    }
+		    return c;
+		}
 }

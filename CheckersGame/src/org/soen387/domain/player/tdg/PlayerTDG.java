@@ -13,7 +13,7 @@ public class PlayerTDG {
 	public static final String TRUNCATE_TABLE = "TRUNCATE TABLE  " + TABLE_NAME + ";";
 	public static final String DROP_TABLE = "DROP TABLE  " + TABLE_NAME + ";";
 	public static final String CREATE_TABLE ="CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" 
-											+ "id BIGINT, "
+											+ "id BIGINT PRIMARY KEY, "
 											+ "first_name VARCHAR(22), "
 											+ "last_name VARCHAR(22),"
 											+ "email VARCHAR(22),"

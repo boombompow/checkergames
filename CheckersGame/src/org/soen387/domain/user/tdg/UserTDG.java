@@ -16,7 +16,8 @@ public class UserTDG {
 											+ "id BIGINT, "
 											+ "username VARCHAR(22), "
 											+ "password VARCHAR(22),"
-											+ "version INT); ";
+											+ "version INT,"
+											+ "FOREIGN KEY (id) REFERENCES player(id)); ";
 	
 	public static final String INSERT = "INSERT INTO " + TABLE_NAME + " (" + COLUMNS + ") "
 										+ "VALUES (?,?,?,?);";
