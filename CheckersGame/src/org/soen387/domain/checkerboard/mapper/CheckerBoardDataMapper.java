@@ -90,19 +90,6 @@ public class CheckerBoardDataMapper {
 		CheckerBoardIdentityMap.put(c.getId(), c);
 	}
 	
-	public static ICheckerBoard findById(long id) throws SQLException, MapperException
-	{
-		if(CheckerBoardIdentityMap.has(id))
-		{
-			return CheckerBoardIdentityMap.get(id);
-		}
-		try{
-			ResultSet rs = CheckerBoardTDG.findById(id);
-			return buildCollection(rs).get(0);
-		} catch (SQLException e){
-			throw new MapperException(e);
-		}	
-	}
 	
 	public static void insert(ICheckerBoard c) throws SQLException {
 		char[][] pieces = c.getPieces();

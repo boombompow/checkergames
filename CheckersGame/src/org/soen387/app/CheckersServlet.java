@@ -75,7 +75,9 @@ public class CheckersServlet extends HttpServlet {
 	
 	private void doChallenge(HttpServletRequest request,
 			HttpServletResponse response) {
-		ChallengeMapper.getOBJECT().fin
+		if((ChallengeMapper.getOBJECT().fin (request.getParameter("id"), player.getId())).size()==0){
+			
+		}
 		
 		
 	}
@@ -115,7 +117,7 @@ public class CheckersServlet extends HttpServlet {
 			request.setAttribute("player", player);
 			
 			// Set games
-			List<CheckerBoard> games = CheckerBoardDataMapper.findByPlayer(user.getId());
+			List<CheckerBoard> games = CheckerBoardDataMapper.findAllPlayer(user.getId());
 			request.setAttribute("games", games);
 			
 			// Set players and status
