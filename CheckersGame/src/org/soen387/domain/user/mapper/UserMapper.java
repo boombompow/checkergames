@@ -40,10 +40,16 @@ public class UserMapper {
 		UserTDG.createTable();
 	}
 	
-	public void insert(User ip) throws SQLException {
+	public boolean insert(User ip) throws SQLException {
 		AbstractPageController.setupDb();
-		UserTDG.insert(ip.getId(), ip.getUserN(), ip.getPassW(), ip.getVersion());
-		UserIdentityMap.put(ip.getId(), ip);
+		if(UserTDG.insert(ip.getId(), ip.getUserN(), ip.getPassW(), ip.getVersion())==-1){
+			return false;
+		}
+		else{
+			UserIdentityMap.put(ip.getId(), ip);
+		}
+		
+		return true;
 	}
 	
 	public void delete(User iu) throws SQLException {

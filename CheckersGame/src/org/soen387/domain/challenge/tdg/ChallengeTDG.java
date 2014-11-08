@@ -107,4 +107,13 @@ public class ChallengeTDG {
 		return ps.executeQuery();
 	}
 	
+	
+	public static ResultSet getId() throws SQLException {
+		Connection con = DbRegistry.getDbConnection();
+		String query = "SELECT id FROM Challenge ORDER BY id DESC LIMIT 1;";
+		PreparedStatement ps = con.prepareStatement(query);
+		ResultSet rs = ps.executeQuery();
+		
+		return rs;
+	} 
 }

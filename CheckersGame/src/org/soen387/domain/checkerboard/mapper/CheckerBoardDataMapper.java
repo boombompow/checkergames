@@ -15,6 +15,16 @@ import org.soen387.domain.player.mapper.PlayerMapper;
 
 public class CheckerBoardDataMapper {
 	
+	private static CheckerBoardDataMapper cbm;
+	private CheckerBoardDataMapper(){	}
+	
+	public static CheckerBoardDataMapper getOBJECT(){
+		if(cbm==null)
+			cbm = new CheckerBoardDataMapper();
+		
+		return cbm;
+	}
+	
 	public static List<ICheckerBoard> buildCollection(ResultSet rs)
 		    throws SQLException {
 		    ArrayList<ICheckerBoard> l = new ArrayList<ICheckerBoard>();
@@ -93,6 +103,19 @@ public class CheckerBoardDataMapper {
 		CheckerBoardIdentityMap.put(c.getId(), c);
 	}
 	
+	public static ICheckerBoard findById(long id) throws SQLException, MapperException
+	{
+		if(CheckerBoardIdentityMap.has(id))
+		{
+			return CheckerBoardIdentityMap.get(id);
+		}
+		try{
+			ResultSet rs = CheckerBoardTDG.findById(id);
+			return buildCollection(rs).get(0);
+		} catch (SQLException e){
+			throw new MapperException(e);
+		}	
+	}
 	
 	public static void insert(ICheckerBoard c) throws SQLException {
 		char[][] pieces = c.getPieces();

@@ -1,6 +1,7 @@
 package org.soen387.app;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.servlet.ServletException;
@@ -9,12 +10,16 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import javax.swing.JOptionPane;
 
 import org.dsrg.soenea.domain.MapperException;
 import org.soen387.domain.challenge.mapper.ChallengeMapper;
 import org.soen387.domain.checkerboard.mapper.CheckerBoardDataMapper;
+import org.soen387.domain.model.challenge.Challenge;
+import org.soen387.domain.model.challenge.ChallengeStatus;
 import org.soen387.domain.model.challenge.IChallenge;
 import org.soen387.domain.model.checkerboard.CheckerBoard;
+import org.soen387.domain.model.checkerboard.ICheckerBoard;
 import org.soen387.domain.model.player.Player;
 import org.soen387.domain.model.user.User;
 import org.soen387.domain.player.mapper.PlayerMapper;
@@ -28,6 +33,7 @@ public class CheckersServlet extends HttpServlet {
 	private static final long serialVersionUID = 1L;
 	private User user;
 	private Player player;
+	private String msg;
        
     /**
      * @see HttpServlet#HttpServlet()
@@ -74,8 +80,23 @@ public class CheckersServlet extends HttpServlet {
 	
 	private void doChallenge(HttpServletRequest request,
 			HttpServletResponse response) {
-		if((ChallengeMapper.getOBJECT().fin (request.getParameter("id"), player.getId())).size()==0){
-			
+		try {
+			if((ChallengeMapper.check1(PlayerMapper.getOBJECT().findById(Long.parseLong(request.getParameter("id"))), PlayerMapper.getOBJECT().findById(player.getId())))){
+				ChallengeMapper.insert( new Challenge (
+											ChallengeMapper.getId()+1, 
+											1, 
+											ChallengeStatus.Open, PlayerMapper.getOBJECT().findById(player.getId()), 
+											PlayerMapper.getOBJECT().findById(Long.parseLong(request.getParameter("id")))
+											));
+			}else{
+				
+			}
+		} catch (NumberFormatException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 		
 		
@@ -115,17 +136,19 @@ public class CheckersServlet extends HttpServlet {
 			request.setAttribute("user", user);
 			request.setAttribute("player", player);
 			
+			
 			// Set games
-			List<CheckerBoard> games = CheckerBoardDataMapper.findAllPlayer(user.getId());
+			List<ICheckerBoard> games = CheckerBoardDataMapper.findByPlayer(user.getId());
 			request.setAttribute("games", games);
 			
-			// Set players and status
+			// Set players
 			List<Player> players = PlayerMapper.getOBJECT().findAll();
 			request.setAttribute("players", players);
 			
-			List<IChallenge> challenges = ChallengeMapper.getOBJECT().findAllById(user.getId());
+			// set challenges and status
+			List<IChallenge> challenges = ChallengeMapper.findAllById(user.getId());
 			request.setAttribute("challenges", challenges);
-			
+
 			
 			// Set sessions
 			HttpSession session = request.getSession();
@@ -142,7 +165,9 @@ public class CheckersServlet extends HttpServlet {
 
 	private void doRegister(HttpServletRequest request,
 			HttpServletResponse response) {
-		// TODO Auto-generated method stub
+
+		
+		
 		String firstname = request.getParameter("firstname");
 		String lastname = request.getParameter("lastname");
 		String username = request.getParameter("username");
@@ -151,32 +176,35 @@ public class CheckersServlet extends HttpServlet {
 		long uid = 0; // user id 
 		
 		try {
-			// New user/player id
-			uid = UserMapper.getOBJECT().getId() + 1;
-			
-			// Create user
-			User newuser = new User(uid, username, password, 1);
-			UserMapper.getOBJECT().insert(newuser);
-			
-			// Create player
-			Player newplayer = new Player(uid, firstname, lastname, email, 1);
-			PlayerMapper.getOBJECT().insert(newplayer);
+					// New user/player id
+					uid = UserMapper.getOBJECT().getId() + 1;
+					
+					// Create user
+					if(UserMapper.getOBJECT().insert(new User(uid, username, password, 1))){
+					
+						// Create player
+						PlayerMapper.getOBJECT().insert(new Player(uid, firstname, lastname, email, 1));
+						try {
+							msg=null;
+							// do automatic login
+							doLogin(request, response);
+						} catch (ServletException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						}
+					}
+					else{
+						System.out.println("------------------------------");
+						request.setAttribute("msg", "error");
+						response.setHeader("Location", "/register.jsp");
+					}
+				
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
-		try {
-			// do automatic login
-			doLogin(request, response);
-		} catch (ServletException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	/**

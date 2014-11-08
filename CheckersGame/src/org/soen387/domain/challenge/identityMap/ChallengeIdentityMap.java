@@ -1,6 +1,7 @@
 package org.soen387.domain.challenge.identityMap;
 
 import java.util.HashMap;
+import java.util.List;
 
 import org.soen387.domain.model.challenge.IChallenge;
 
@@ -29,7 +30,7 @@ public class ChallengeIdentityMap {
 	
 	public static IChallenge get(long id)			
 	{	
-		return getIdentityMap().get(id);
+		return getIdentityMap().get(id);	
 	}
 	
 	public static boolean has(long id)

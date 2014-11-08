@@ -17,7 +17,7 @@ public class ChallengeProxy implements IChallenge{
 		if(c == null)
 		{
 			try {
-				c = ChallengeMapper.findById(id);
+				c = ChallengeMapper.findByChallengeId(id);
 			} catch (MapperException e) {
 			}
 		}

@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.dsrg.soenea.domain.MapperException;
+import org.soen387.app.AbstractPageController;
 import org.soen387.domain.challenge.identityMap.ChallengeIdentityMap;
 import org.soen387.domain.challenge.tdg.ChallengeTDG;
 import org.soen387.domain.checkerboard.mapper.CheckerBoardDataMapper;
@@ -15,11 +16,20 @@ import org.soen387.domain.model.challenge.IChallenge;
 import org.soen387.domain.model.checkerboard.ICheckerBoard;
 import org.soen387.domain.model.player.IPlayer;
 import org.soen387.domain.player.mapper.PlayerMapper;
-import org.soen387.domain.user.mapper.UserMapper;
 
 
 public class ChallengeMapper {
+	
 	private static ChallengeMapper cm;
+	private ChallengeMapper(){	}
+	
+	public static ChallengeMapper getOBJECT(){
+		if(cm==null)
+			cm = new ChallengeMapper();
+		
+		return cm;
+	}
+	
 	public static int status(IChallenge c)
 	{
 		switch(c.getStatus())
@@ -31,20 +41,13 @@ public class ChallengeMapper {
 		return -1;
 	}
 	
-	public static ChallengeMapper getOBJECT(){
-		if(cm==null)
-			cm = new ChallengeMapper();
-		
-		return cm;
-	}
-	
 	public static void createTable() throws SQLException
-	{	
+	{
 		ChallengeTDG.createTable();
 	}
 	
 	public static void dropTable() throws SQLException
-	{		
+	{
 		ChallengeTDG.dropTable();
 	}
 	
@@ -68,9 +71,6 @@ public class ChallengeMapper {
             throw new MapperException(e);
         }
 	}
-<<<<<<< HEAD
-	
-=======
 	
 	public static boolean check1(IPlayer challenger, IPlayer challengee)
 	{
@@ -103,7 +103,6 @@ public class ChallengeMapper {
 		return true;
 	}
 	
->>>>>>> 816bf5e4c0fc201cfa1402dadbd7370df0e6e21f
 	public static List<IChallenge> check(long id, long id2) throws MapperException
 	{
 		try {
@@ -124,8 +123,7 @@ public class ChallengeMapper {
         throw new MapperException(e);
     }
 	}
-	
-	public static IChallenge findById(long id) throws MapperException{
+	public static IChallenge findByChallengeId(long id) throws MapperException{
 		if(ChallengeIdentityMap.has(id))
 		{
 			return ChallengeIdentityMap.get(id);
@@ -149,13 +147,26 @@ public class ChallengeMapper {
 		return c;
 	}
 	
-	public static List<IChallenge> findAllById(long id) throws MapperException{
-        try {
-            ResultSet rs = ChallengeTDG.findByPlayer(id);
-            return buildCollection(rs);
-        } catch (SQLException e) {
-            throw new MapperException(e);
-        }
+	public static List<IChallenge> findAllById(long PlayerId) throws MapperException{
+		List<IChallenge> c = null;
+		try{
+			ResultSet rs = ChallengeTDG.findByPlayer(PlayerId);
+			while(rs.next()) {
+				c.add(new Challenge(rs.getLong("id"),
+		        		rs.getInt("version"),
+		        		ChallengeStatus.values()[rs.getInt("status")],
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challenger")),
+		        		PlayerMapper.getOBJECT().findById(rs.getLong("challengee"))
+		        		));
+				rs.close();
+				if(ChallengeIdentityMap.has(c.get(c.size()-1).getId()))
+					ChallengeIdentityMap.put(c.get(c.size()-1).getId(), c.get(c.size()-1));
+			}
+			
+		} catch (SQLException e){
+			throw new MapperException(e);
+		}
+		return c;
 	}
 	
 	public static void insert(IChallenge c) throws SQLException {
@@ -174,17 +185,15 @@ public class ChallengeMapper {
 		ChallengeIdentityMap.put(c.getId(), c);
 	}
 	
-	public static List<IChallenge> buildCollection(ResultSet rs)
-		    throws SQLException {
-		    ArrayList<IChallenge> c = new ArrayList<IChallenge>();
-		    
-		    while(rs.next()) {
-		        c.add(new Challenge(rs.getLong("id"),rs.getInt("version"),
-		        		ChallengeStatus.values()[rs.getInt("status")],
-		        		PlayerMapper.getOBJECT().findById(rs.getLong("challenger")),
-		        		PlayerMapper.getOBJECT().findById(rs.getLong("challengee"))     
-		        		));
-		    }
-		    return c;
+	
+	public static long getId() throws SQLException {
+		AbstractPageController.setupDb();
+		ResultSet rs=ChallengeTDG.getId();
+		long max_id=-1;
+		while(rs.next()){
+			max_id = rs.getLong("id");
 		}
+		
+		return max_id;
+	} 
 }
